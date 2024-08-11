@@ -1,0 +1,4 @@
+#files not want to be uploaded 
+__pycache__
+venv/
+.env
