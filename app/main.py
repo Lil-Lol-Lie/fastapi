@@ -4,10 +4,11 @@ from .database import engine
 from .routers import post, user, auth, vote
 from .config import settings
 from starlette.middleware.cors import CORSMiddleware
+#from sqlalchemy.orm import declarative_base
 
 #command tell SQLalchemy to run create statements to generate tables
 #models.Base.metadata.create_all(bind=engine)
-
+#Base = declarative_base()
 app = FastAPI()
 
 #function allows other domains access to our API
