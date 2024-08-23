@@ -48,40 +48,6 @@ def client(session):
 def token(test_user):
     return create_token({"user_id": test_user['id']})
 
-
-@pytest.fixture
-def authorized_client(client, token):
-    client.headers = {
-        **client.headers,
-        "Authorization": f"Bearer {token}"
-    }
-    return client
-
-@pytest.fixture
-def test_posts(test_user, session, test_user2):
-    posts_data = [{
-        "title": "first",
-        "content": "first",
-        "owner_id": test_user['id']
-    }, {
-        "title": "2nd title",
-        "content": "2nd content",
-        "owner_id": test_user['id']    
-    }]
-
-    def create_post_model(post):
-        return models.Post(**post)
-
-    post_map = map(create_post_model, posts_data)
-    posts = list(post_map)
-
-    session.add_all(posts)
-
-    session.commit()
-
-    posts = session.query(models.Post).all()
-    return posts
-
 @pytest.fixture
 def test_user2(client):
     user_data = {"email": "love@gmail.com",
@@ -97,7 +63,7 @@ def test_user2(client):
 
 @pytest.fixture
 def test_user(client):
-    user_data = {"email": "love@gmail.com",
+    user_data = {"email": "you@gmail.com",
                  "password": "123"}
     res = client.post("/users/", json=user_data)
 
@@ -106,4 +72,43 @@ def test_user(client):
     new_user = res.json()
     new_user['password'] = user_data['password']
     return new_user
+
+@pytest.fixture
+def authorized_client(client, token):
+    client.headers = {
+        **client.headers,
+        "Authorization": f"Bearer {token}"
+    }
+    return client
+
+@pytest.fixture
+def test_posts(test_user, session, test_user2):
+    posts_data = [{
+        "title": "first",
+        "content": "first",
+        "user_id": test_user['id']
+    }, {
+        "title": "2nd title",
+        "content": "2nd content",
+        "user_id": test_user['id']    
+    },{
+        "title": "love you",
+        "content": "very much",
+        "user_id": test_user['id']
+    }]
+
+    def create_post_model(post):
+        return models.Post(**post)
+
+    post_map = map(create_post_model, posts_data)
+    posts = list(post_map)
+
+    session.add_all(posts)
+
+    session.commit()
+
+    posts = session.query(models.Post).all()
+    return posts
+
+
 
